@@ -1,0 +1,24 @@
+{
+  "name": "web_othello",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamei28/web_othello.git"
+  },
+  "keywords": [],
+  "author": "kamei28",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kamei28/web_othello/issues"
+  },
+  "homepage": "https://github.com/kamei28/web_othello#readme",
+  "dependencies": {
+    "ws": "^8.19.0"
+  }
+}
