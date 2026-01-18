@@ -1,4 +1,5 @@
 const server_address = "ws://127.0.0.1:3000";
+
 let socket = new WebSocket(server_address);
 let pieceloc = 0;
 
@@ -15,13 +16,10 @@ socket.onclose = () => {
 // データ受信
 socket.onmessage = message => {
     console.log(`${socket.url}からの受信: ${message.data}`);
-
-    // データ解析
     let json = json_parse(message.data);
 
-    // json.type == boardならボード処理実行
     if (json && json.type == "board") {
-        
+
         // 前回の置き場所を削除して更新
         document.getElementById(pieceloc | 0).classList.remove("ok", "ng");
         pieceloc = json && json.add_loc | 0;
