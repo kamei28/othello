@@ -40,3 +40,17 @@ ids.forEach(id => {
     let idElement = document.getElementById(id);
     idElement.classList.add("mark");
 });
+
+
+/* ボードのクリック処理 */
+board.addEventListener("click", async event => {
+    if (event.target.tagName == "TD" && socket.readyState === 1) {
+        socket.send(JSON.stringify({
+            type: "click", 
+            loc: event.target.id
+        }));
+    } else {
+        // !TDの場合は無視
+        // !== 1の場合はサーバ未接続
+    }
+});
