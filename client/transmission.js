@@ -1,44 +1,49 @@
 const server_address = "ws://127.0.0.1:3000";
-
-let socket = new WebSocket(server_address);
 let pieceloc = 0;
+let socket;
 
-// 接続成功
-socket.onopen = () => {
-    console.log(`${socket.url}に接続しました。`);
-};
+// サーバ接続(ws)
+(function connect() {
+    socket = new WebSocket(server_address);
 
-// 接続切断
-socket.onclose = () => {
-    console.log(`${socket.url}との接続が途切れました。`);
-};
+    // 接続成功
+    socket.onopen = () => {
+        console.log(`${socket.url}に接続しました。`);
+    };
 
-// データ受信
-socket.onmessage = message => {
-    console.log(`${socket.url}からの受信: ${message.data}`);
-    let json = json_parse(message.data);
+    // 接続切断
+    socket.onclose = () => {
+        console.log(`${socket.url}との接続が途切れました。`);
+        setTimeout(connect, 5000);
+    };
 
-    if (json && json.type == "board") {
+    // データ受信
+    socket.onmessage = message => {
+        console.log(`${socket.url}からの受信: ${message.data}`);
+        let json = json_parse(message.data);
 
-        // 前回の置き場所を削除して更新
-        document.getElementById(pieceloc | 0).classList.remove("ok", "ng");
-        pieceloc = json && json.add_loc | 0;
+        if (json && json.type == "board") {
 
-        // 青又は赤で位置表示
-        let stone = document.getElementById(json.add_loc);
-        stone.classList.add(json.state);
-        stone.classList.add(json.color);
+            // 前回の置き場所を削除して更新
+            document.getElementById(pieceloc | 0).classList.remove("ok", "ng");
+            pieceloc = json && json.add_loc | 0;
 
-        // 置き換え駒があれば白黒反転
-        json.rev_locs.forEach(id => {
-            let stone2 = document.getElementById(id);
-            stone2.classList = null;
-            stone2.classList.add(json.color);
-        });
-    }
+            // 青又は赤で位置表示
+            let stone = document.getElementById(json.add_loc);
+            stone.classList.add(json.state);
+            stone.classList.add(json.color);
 
-    console.log(json);
-};
+            // 置き換え駒があれば白黒反転
+            json.rev_locs.forEach(id => {
+                let stone2 = document.getElementById(id);
+                stone2.classList = null;
+                stone2.classList.add(json.color);
+            });
+        }
+
+        console.log(json);
+    };
+})();
 
 /* JSON変換 */
 const json_parse = data => {

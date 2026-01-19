@@ -13,6 +13,10 @@ const ws = require("ws");
 const ws_server = new ws.Server({ port: port = process.env.PORT?? 3000 });
 const server_address = "127.0.0.1";     // for local env
 
+// gameState variables
+// board = [white stone, black stone] -> &[u64]
+let board = [0x1008000000n, 0x810000000n];
+let counter = 0;
 
 // クライアントとの接続待ち
 ws_server.on("connection", socket => {
@@ -29,7 +33,16 @@ ws_server.on("connection", socket => {
         console.log(`\rReceved: ${data}`);
 
         let json = fn.json_parse(data);
-        let res // wasm
+        let res = [];
+
+        if (!json) {
+            // 伝送エラー？
+            
+        } else if (json.type == "click" && typeof(json.loc) == "number") {
+            board = wasm.put_stone(board, json.loc);
+            res = wasm.legalize(board, json.loc);
+            console.log(board, res);
+        }
 
         // socket.send(res);
 
@@ -49,6 +62,6 @@ ws_server.on("connection", socket => {
 
 
 // add(BigInt, BigInt)
-console.log("7n: ", wasm.add(3n, 4n));
+// console.log("7n: ", wasm.add(3n, 4n));
 
 console.log(`\nServer running on ws://${server_address}:${port}`);
