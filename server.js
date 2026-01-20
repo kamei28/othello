@@ -14,7 +14,7 @@ const ws_server = new ws.Server({ port: port = process.env.PORT?? 3000 });
 const server_address = "127.0.0.1";     // for local env
 
 // gameState variables
-// board = [white stone, black stone] -> &[u64]
+// board = [black stone, white stone] -> &[u64]
 let board = [0x1008000000n, 0x810000000n];
 let counter = 0;
 
@@ -33,20 +33,19 @@ ws_server.on("connection", socket => {
         console.log(`\rReceved: ${data}`);
 
         let json = fn.json_parse(data);
-        let res = {
-            state: null, 
-            color: wasm.next_turn(counter)
-        }, rev_locs = [];
+        let res = { color: wasm.next_turn(counter) };
 
         if (!json) {
             // 伝送エラー？
             
         } else if (json.type == "click" && typeof(json.loc) == "number") {
-            board = wasm.put_stone(board, json.loc, counter);
-            
+            // board = wasm.put_stone(board, counter, json.loc);
+
             // 合法手なら反転する石を算出
-            if (board) {
-                rev_locs = wasm.legalize(board, json.loc);
+            if (wasm.is_valid(board, counter, json.loc)) {
+                // wasm.legal_loc(board, json.loc);
+                board = wasm.put_stone(board, counter, json.loc);
+                res.rev_locs = wasm.rev_locs(board, counter, json.loc);
                 res.state = "ok";
                 counter++;
 
