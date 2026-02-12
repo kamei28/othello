@@ -6,29 +6,27 @@ let socket;
 (function connect() {
     socket = new WebSocket(server_address);
 
-    // 接続成功
     socket.onopen = () => {
         console.log(`${socket.url}に接続しました。`);
     };
 
-    // 接続切断
+    // 切断時の処理(5秒ごとに再接続実行)
     socket.onclose = () => {
         console.log(`${socket.url}との接続が途切れました。`);
         setTimeout(connect, 5000);
     };
 
-    // データ受信
     socket.onmessage = message => {
         console.log(`${socket.url}からの受信: ${message.data}`);
         let json = json_parse(message.data);
 
         if (json && json.type == "board") {
 
-            // 前回の置き場所を削除して更新
+            // (合法手表示) 前回の置き場所を削除して更新
             document.getElementById(pieceloc | 0).classList.remove("ok", "ng");
-            pieceloc = json && json.add_loc | 0;
+            pieceloc = json.add_loc | 0;
 
-            // 青又は赤で位置表示
+            // (合法手表示) 青又は赤で位置表示
             let stone = document.getElementById(json.add_loc);
             stone.classList.add(json.state);
             stone.classList.add(json.color);

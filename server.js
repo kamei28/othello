@@ -1,58 +1,51 @@
 // データ処理用サーバ(Node.js)
 // WebサーバはNetlifyを使用予定
 
-// オセロのゲーム処理(./othello_core/src/lib.rs)
+// Othello Engine(./othello_core/src/lib.rs)
 const wasm = require("./othello_core/pkg/core.js");
 const fn = require("./lib/funcs.js");
 
-// 開発用CLI
-const readline = require("node:readline");
-
-// Cretate WebSocket Server
+// Cretate the WebSocket Server
 const ws = require("ws");
 const ws_server = new ws.Server({ port: port = process.env.PORT?? 3000 });
-const server_address = "127.0.0.1";     // for local env
+const server_address = "127.0.0.1";
+const game_data = {};
 
-// gameState variables
-// board = [black stone, white stone] -> &[u64]
-let board = [0x1008000000n, 0x810000000n];
-let counter = 0;
-
-// クライアントとの接続待ち
+// Request processing
 ws_server.on("connection", socket => {
-    console.log("Client connected");
-
-    // 開発用CLI
-    readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    }).on("line", input => socket.send(input));
+    console.log("Client connected!");
 
     // 受信データの処理
     socket.on("message", data => {
         console.log(`\rReceved: ${data}`);
-
+        game_data["id"] = game_data["id"]?? new wasm.Game();
+        let game = game_data["id"];
         let json = fn.json_parse(data);
-        let res = { color: wasm.next_turn(counter) };
-
+        let res = {};
+        
         if (!json) {
             // 伝送エラー？
             
+        // マスクリック時の処理
         } else if (json.type == "click" && typeof(json.loc) == "number") {
-            // board = wasm.put_stone(board, counter, json.loc);
+            let valid = game.is_valid(json.loc, json.color);
+            res.color = game.next_turn();   // 保持色との整合性チェック行う
+            res.state = valid? "ok": "ng";
+            res.rev_loc = json.loc;     // だめだめ
+            return game.is_valid(json.loc, json.color);
 
-            // 合法手なら反転する石を算出
-            if (wasm.is_valid(board, counter, json.loc)) {
-                // wasm.legal_loc(board, json.loc);
-                board = wasm.put_stone(board, counter, json.loc);
-                res.rev_locs = wasm.rev_locs(board, counter, json.loc);
-                res.state = "ok";
-                counter++;
 
-            // 非合法手なら赤表示
-            } else {
-                res.state = "ng";
-            }
+            // // 合法手なら反転する石を算出
+            // if (wasm.is_valid(json.loc, json.color)) {
+            //     board = wasm.put_stone(board, counter, json.loc);
+            //     res.rev_locs = wasm.rev_locs(board, counter, json.loc);
+            //     res.state = "ok";
+            //     counter++;
+
+            // // 非合法手なら赤表示
+            // } else {
+            //     res.state = "ng";
+            // }
 
             console.log(board, res);
         }
@@ -72,9 +65,5 @@ ws_server.on("connection", socket => {
         console.log("Client disconnected");
     });
 });
-
-
-// add(BigInt, BigInt)
-// console.log("7n: ", wasm.add(3n, 4n));
 
 console.log(`\nServer running on ws://${server_address}:${port}`);

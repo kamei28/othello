@@ -1,0 +1,248 @@
+* {
+    box-sizing: border-box;
+    user-select: none;
+}
+:root {
+    width: 100vw;
+    min-height: 100vh;
+    background: whitesmoke;
+    font-family: sans-serif, serif;
+    margin: 0;
+    padding: 0;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+}
+.title {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    margin: 0 0 10px;
+    /* box-shadow: 0 0 1rex rgb(0, 0, 0, 0.1); */
+}
+#icon {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+.game {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin: auto;
+}
+
+/* ボードスタイル */
+table {
+    width: min(95vw, 500px);
+    height: min(95vw, 500px);
+    background: black;
+}
+tbody {
+    background: green;
+    outline: 3px solid black;
+    border-radius: 2px;
+}
+tr, td {
+    margin: 0;
+}
+td {
+    cursor: pointer;
+}
+
+/* ゲーム状態 */
+.state {
+    height: fit-content;
+    width: 250px;
+}
+
+/* 情勢・グラフ描写 */
+ul.graph {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    width: 100%;
+    padding: 0;
+    margin: 10px 0 20px;
+    /* border-left: 2px solid gray; */
+}
+#next_turn {
+    padding: 0 0 15px;
+    font-weight: 600;
+    font-size: larger;
+}
+.graph .names {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+}
+.graph .names .name {
+    font-size: small;
+    padding: 3px 5px;
+}
+.graph #grapgh {
+    width: 100%;
+    height: 1.8em;
+    background: linear-gradient(to left, white 50%, black 50%);
+    border: 2px solid gray;
+    border-radius: 10px;
+}
+
+
+/* ゲーム操作 */
+ul.ctrl {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    /* padding: 5px 0 5px 10px; */
+    padding: 0;
+    margin: 25px 0;
+    gap: 20px;
+    /* border-left: 2px solid gray; */
+}
+#giveup {
+    background: #ea5550;
+}
+#giveup:hover {
+    background: red;
+    transition: all 0.2s;
+}
+#draw {
+    background: #00a960;
+}
+#draw:hover {
+    background: green;
+    transition: all 0.2s;
+}
+input[type="button"] {
+    color: #fafdff;
+    font-size: 1.1em;
+    font-family: sans-serif, serif;
+    cursor: pointer;
+    padding: 3px 15px 6px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    outline: none;
+}
+
+/* チャット */
+textarea {
+    resize: none;
+    width: 100%;
+    height: 200px;
+    line-height: 1.5;
+    color: gray;
+    background: rgb(255, 255, 255, 0.1);
+    padding: 5px;
+    border: none;
+    border: 2px solid gray;
+    border-radius: 5px;
+    outline: none;
+}
+ul.sendms {
+    display: flex;
+    width: 100%;
+    height: 2.5rem;
+    /* justify-content: center; */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 2px solid gray;
+    border-radius: 5px;
+    background: whitesmoke;
+}
+#ms {
+    width: 78%;
+    padding: 0 5px;
+    font-family: sans-serif, serif;
+    background: none;
+    border: none;
+    outline: none;
+}
+#ms_submit {
+    width: 23%;
+    padding: 0;
+    margin: 1px;
+    color: #164a84;
+    background: #dcdddd;
+    font-size: normal;
+    border: none;
+    outline: none;
+}
+
+/* 白駒、黒駒 */
+td.white, td.black {
+    cursor: auto;
+    position: relative;
+}
+td.white:after, td.black:after {
+    content: "";
+    position: absolute;
+    top: 4.5%;
+    left: 4.5%;
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+}
+td.white::after {
+    background: white;
+}
+td.black::after {
+    background: black;
+}
+
+/* OK、NG */
+td.ok {
+    background: rgb(120, 120, 255, 0.7);
+}
+td.ng {
+    background: #f00;
+}
+
+/* 四隅の丸表示 */
+td.mark {
+    position: relative;
+}
+td.mark::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 12px;
+    height: 12px;
+    background-color: black;
+    border-radius: 50%;
+}
+
+/* div.space {
+    margin: auto;
+} */
+
+ul.buttom-bar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    margin: 0 auto;
+    padding: 5px;
+    margin: 10px 0 0 0;
+    font-size: small;
+    color: #eee;
+    background: #444;
+}
+.link {
+    cursor: pointer;
+}
+.link:hover {
+    color: #00f;
+    transition: 300ms;
+}
