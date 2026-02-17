@@ -36,7 +36,6 @@ cd ..
 
 ### How to run
 ```sh
-Start WebSocket server
 npm run start
 ```
 
